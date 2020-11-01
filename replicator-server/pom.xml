@@ -1,0 +1,123 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>br.com.replicator</groupId>
+        <artifactId>kafkaToElk-pom</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <name>replicator-server</name>
+    <packaging>jar</packaging>
+    <artifactId>replicator-server</artifactId>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-config</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.elasticsearch</groupId>
+            <artifactId>elasticsearch</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <executable>true</executable>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>io.fabric8</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <configuration>
+                    <showLogs>${docker.logs.show}</showLogs>
+                    <verbose>true</verbose>
+                    <images>
+                        <image>
+                            <name>${docker.registry.url}/${project.artifactId}:${project.version}</name>
+                            <alias>${project.artifactId}</alias>
+                            <build>
+                                <from>ideiasinfo/ms-apm-base:1.0.1</from>
+                                <entryPoint>
+                                    <exec>
+                                        <arg>java</arg>
+                                        <arg>-javaagent:../apm-agent.jar</arg>
+                                        <arg>-Delastic.apm.service_name=replicatorserver</arg>
+                                        <arg>-Delastic.apm.application_packages=br.com.replicatorserver</arg>
+                                        <arg>-Delastic.apm.server_urls=https://apm-server-apm-http.elastic-system:8200</arg>
+                                        <arg>-Delastic.apm.verify_server_cert=false</arg>
+                                        <arg>-Delastic.apm.secret_token=2qNn632f66hWg0lOKQ27Fu6O</arg>
+                                        <arg>-jar</arg>
+                                        <arg>/maven/${project.artifactId}-${project.version}.${project.packaging}</arg>
+                                        <arg>--spring.profiles.active=${PROFILE}</arg>
+                                        <arg>--spring.cloud.config.uri=${CONFIG_SERVER}</arg>
+                                    </exec>
+                                </entryPoint>
+                                <assembly>
+                                    <descriptorRef>artifact</descriptorRef>
+                                </assembly>
+                            </build>
+                            <run>
+                                <namingStrategy>alias</namingStrategy>
+                                <network>
+                                    <mode>custom</mode>
+                                    <name>microservices-bridge</name>
+                                </network>
+                                <env>
+                                    <PROFILE>devext</PROFILE>
+                                    <CONFIG_SERVER>http://192.168.0.150:8888/config-server</CONFIG_SERVER>
+                                </env>
+                                <ports>
+                                    <port>8010:8080</port>
+                                </ports>
+                            </run>
+                        </image>
+                    </images>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>

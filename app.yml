@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: replicator-server
+  labels:
+    app: replicator-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: replicator-server
+  template:
+    metadata:
+      labels:
+        app: replicator-server
+    spec:
+      containers:
+        - name: replicator-server
+          image: ideiasinfo/replicator-server:1.0.0
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: replicator-server-configuration
+          resources:
+            limits:
+              memory: "1000Mi"
+              cpu: "200m"
