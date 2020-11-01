@@ -33,7 +33,7 @@ public class ElsConnector {
 
     public void addMsg(String topic, JsonNode msg){
         try{
-            ResponseEntity<String> result = restTemplate.exchange(buildUrl("kafka-message/"+topic), POST,
+            ResponseEntity<String> result = restTemplate.exchange(buildUrl("kafka-"+topic+"/doc"), POST,
                     new HttpEntity<>(msg, getHeaders()), String.class);
             logger.debug(result.getBody());
         }catch (HttpClientErrorException e) {
