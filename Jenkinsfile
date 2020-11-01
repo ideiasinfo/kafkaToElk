@@ -23,7 +23,7 @@ podTemplate(label: 'java11pod', containers: [
         stage('Clone repository') {
             container('git') {
                 sh 'hostname -i'
-                sh 'git clone -b master git@github.com:ideiasinfo/kafkaToElk.git'
+                sh 'git clone -b main git@github.com:ideiasinfo/kafkaToElk.git'
             }
         }
 
