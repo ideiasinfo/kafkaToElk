@@ -31,6 +31,12 @@ public class ReplicatorConfiguration {
         elsConnector.addMsg(SENSOR_STATE_CHANGE_MSG, msg);
     }
 
+    @KafkaListener(topics = LIGHT_STATE_CHANGE_MSG, groupId = REPLICATOR_GROUP_ID)
+    public void processLightStateChange(@Payload final JsonNode msg){
+        logger.debug("replicating "+LIGHT_STATE_CHANGE_MSG+" msg");
+        elsConnector.addMsg(LIGHT_STATE_CHANGE_MSG, msg);
+    }
+
     @KafkaListener(topics = TELEGRAM_MSG, groupId = REPLICATOR_GROUP_ID)
     public void processTelegramMessage(@Payload final JsonNode msg){
         logger.debug("replicating "+TELEGRAM_MSG+" msg");
