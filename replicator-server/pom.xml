@@ -78,16 +78,10 @@
                             <name>${docker.registry.url}/${project.artifactId}:${project.version}</name>
                             <alias>${project.artifactId}</alias>
                             <build>
-                                <from>ideiasinfo/ms-apm-base:1.0.1</from>
+                                <from>openjdk/11.0.6-jre-slim</from>
                                 <entryPoint>
                                     <exec>
                                         <arg>java</arg>
-                                        <arg>-javaagent:../apm-agent.jar</arg>
-                                        <arg>-Delastic.apm.service_name=replicatorserver</arg>
-                                        <arg>-Delastic.apm.application_packages=br.com.replicatorserver</arg>
-                                        <arg>-Delastic.apm.server_urls=https://apm-server-apm-http.elastic-system:8200</arg>
-                                        <arg>-Delastic.apm.verify_server_cert=false</arg>
-                                        <arg>-Delastic.apm.secret_token=2qNn632f66hWg0lOKQ27Fu6O</arg>
                                         <arg>-jar</arg>
                                         <arg>/maven/${project.artifactId}-${project.version}.${project.packaging}</arg>
                                         <arg>--spring.profiles.active=${PROFILE}</arg>
