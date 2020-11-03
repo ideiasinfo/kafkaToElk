@@ -78,7 +78,7 @@
                             <name>${docker.registry.url}/${project.artifactId}:${project.version}</name>
                             <alias>${project.artifactId}</alias>
                             <build>
-                                <from>openjdk/11.0.6-jre-slim</from>
+                                <from>openjdk:11.0.6-jre-slim</from>
                                 <entryPoint>
                                     <exec>
                                         <arg>java</arg>
