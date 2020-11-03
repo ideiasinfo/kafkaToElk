@@ -6,7 +6,7 @@
     <parent>
         <groupId>br.com.replicator</groupId>
         <artifactId>kafkaToElk-pom</artifactId>
-        <version>1.0.4</version>
+        <version>1.0.5</version>
     </parent>
 
     <name>replicator-server</name>
@@ -78,7 +78,7 @@
                             <name>${docker.registry.url}/${project.artifactId}:${project.version}</name>
                             <alias>${project.artifactId}</alias>
                             <build>
-                                <from>openjdk/11.0.6-jre-slim</from>
+                                <from>openjdk:11.0.6-jre-slim</from>
                                 <entryPoint>
                                     <exec>
                                         <arg>java</arg>
