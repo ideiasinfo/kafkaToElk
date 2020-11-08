@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: replicator-server
-          image: ideiasinfo/replicator-server:1.0.6
+          image: ideiasinfo/replicator-server:1.0.7
           ports:
             - containerPort: 8080
           envFrom:
