@@ -22,6 +22,12 @@ spec:
           envFrom:
             - configMapRef:
                 name: replicator-server-configuration
+          env:
+            - name: CONFIG_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: config-server-password
+                  key: securitypassword
           resources:
             limits:
               memory: "1000Mi"

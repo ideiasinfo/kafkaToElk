@@ -86,6 +86,8 @@
                                         <arg>/maven/${project.artifactId}-${project.version}.${project.packaging}</arg>
                                         <arg>--spring.profiles.active=${PROFILE}</arg>
                                         <arg>--spring.cloud.config.uri=${CONFIG_SERVER}</arg>
+                                        <arg>--spring.cloud.config.username=${CONFIG_USERNAME}</arg>
+                                        <arg>--spring.cloud.config.password=${CONFIG_PASSWORD}</arg>
                                     </exec>
                                 </entryPoint>
                                 <assembly>
@@ -101,6 +103,8 @@
                                 <env>
                                     <PROFILE>devext</PROFILE>
                                     <CONFIG_SERVER>http://192.168.0.150:8888/config-server</CONFIG_SERVER>
+                                    <CONFIG_USERNAME>user</CONFIG_USERNAME>
+                                    <CONFIG_PASSWORD></CONFIG_PASSWORD>
                                 </env>
                                 <ports>
                                     <port>8010:8080</port>
