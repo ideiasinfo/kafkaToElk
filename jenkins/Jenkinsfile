@@ -1,8 +1,7 @@
 podTemplate(label: 'java11pod', containers: [
     containerTemplate(name: 'git', image: 'alpine/git', ttyEnabled: true, command: 'cat'),
     containerTemplate(name: 'maven', image: 'maven:3.6.3-jdk-11', command: 'cat', ttyEnabled: true),
-    containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true),
-    containerTemplate(name: 'kubectl', image: 'ideiasinfo/jnlp-kubectl:1.0.0', command: 'cat', ttyEnabled: true)
+    containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true)
   ],
   volumes: [
     hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock'),
@@ -12,26 +11,43 @@ podTemplate(label: 'java11pod', containers: [
   ]
   ) {
     node('java11pod') {
-        stage('Check running containers') {
-            container('docker') {
-                sh 'hostname'
-                sh 'hostname -i'
-                sh 'docker ps'
+
+        stage('Var definition') {
+            script {
+                gitRepo = 'git@github.com:ideiasinfo/kafkaToElk.git'
+                gitFolder = 'kafkaToElk'
+                dockerImage = 'ideiasinfo/replicator-server'
             }
         }
 
         stage('Clone repository') {
             container('git') {
+                sh 'whoami'
+                sh 'hostname'
                 sh 'hostname -i'
-                sh 'git clone -b main git@github.com:ideiasinfo/kafkaToElk.git'
+                if ( fileExists(gitFolder) ) {
+                    dir(gitFolder) {
+                        sh 'ls'
+                        sh 'git fetch'
+                        sh 'git reset --hard'
+                        sh 'git checkout main'
+                        sh 'git pull'
+                    }
+                }else{
+                    sh 'git clone -b main '+gitRepo
+                }
+                sh 'chown root:root -R '+gitFolder
+                sh 'chmod 777 -R '+gitFolder
+                sh 'ls -lh'
             }
         }
 
         stage('Maven Build') {
             container('maven') {
-                dir('kafkaToElk/') {
-                    sh 'hostname'
-                    sh 'hostname -i'
+                sh 'whoami'
+                sh 'hostname'
+                sh 'hostname -i'
+                dir(gitFolder) {
                     sh "mvn clean install"
                     script {
                         pom = readMavenPom(file: 'pom.xml')
@@ -43,9 +59,10 @@ podTemplate(label: 'java11pod', containers: [
 
         stage('Docker Build') {
             container('maven') {
-                dir('kafkaToElk/') {
-                    sh 'hostname'
-                    sh 'hostname -i'
+                sh 'whoami'
+                sh 'hostname'
+                sh 'hostname -i'
+                dir(gitFolder) {
                     sh 'mvn docker:build'
                 }
             }
@@ -53,6 +70,7 @@ podTemplate(label: 'java11pod', containers: [
 
         stage('Docker Login') {
             container('docker') {
+                sh 'whoami'
                 sh 'hostname'
                 sh 'hostname -i'
                 sh 'docker login'
@@ -61,22 +79,12 @@ podTemplate(label: 'java11pod', containers: [
 
         stage('Docker Push') {
             container('docker') {
+                sh 'whoami'
                 sh 'hostname'
                 sh 'hostname -i'
                 sh 'docker images'
-                sh 'docker push ideiasinfo/replicator-server:'+projectVersion
-                sh 'docker rmi -f ideiasinfo/replicator-server:'+projectVersion
-            }
-        }
-
-        stage('Deploy') {
-            container('kubectl') {
-                dir('kafkaToElk/') {
-                    sh 'hostname'
-                    sh 'hostname -i'
-                    sh 'ls'
-                    sh 'kubectl apply -f app.yml --namespace default'
-                }
+                sh 'docker push '+dockerImage+':'+projectVersion
+                sh 'docker rmi -f '+dockerImage+':'+projectVersion
             }
         }
 
