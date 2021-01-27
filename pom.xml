@@ -5,11 +5,10 @@
   	<modelVersion>4.0.0</modelVersion>
 	<groupId>br.com.replicator</groupId>
 	<artifactId>kafkaToElk-pom</artifactId>
-	<version>1.0.9</version>
+	<version>1.1.0</version>
 	<packaging>pom</packaging>
 
 	<properties>
-		<base-version>1.0.9</base-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
@@ -22,6 +21,8 @@
 		<spring-cloud.version>Hoxton.SR8</spring-cloud.version>
 
 		<spring-kafka.version>2.5.6.RELEASE</spring-kafka.version>
+
+		<lombok.version>1.18.16</lombok.version>
         
 		<elasticsearch.version>7.9.3</elasticsearch.version>
 
@@ -44,6 +45,13 @@
 				<groupId>org.elasticsearch</groupId>
 				<artifactId>elasticsearch</artifactId>
 				<version>${elasticsearch.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.projectlombok</groupId>
+				<artifactId>lombok</artifactId>
+				<version>${lombok.version}</version>
+				<scope>provided</scope>
 			</dependency>
 
 			<dependency>

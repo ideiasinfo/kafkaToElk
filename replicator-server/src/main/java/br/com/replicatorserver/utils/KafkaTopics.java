@@ -10,5 +10,8 @@ public class KafkaTopics {
     public static final String TELEGRAM_MESSAGE_SENT = "telegram.message.sent";
     public static final String TEMPERATURE_STATUS = "temperature.status";
 
+    public static final String STOCK_UPDATE_MSG = "stock.update.msg";
+    public static final String STOCK_BULK_MSG = "stock.bulk.msg";
+
     public static final String REPLICATOR_GROUP_ID = "replicator.group.id";
 }
