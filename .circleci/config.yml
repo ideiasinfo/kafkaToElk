@@ -20,10 +20,6 @@ jobs:
             - replicator-server-{{ checksum "pom.xml" }}
             - replicator-server
 
-      - run:
-          name: Compile and package
-          command: mvn clean install
-
       - run: mvn dependency:go-offline
 
       - save_cache:
