@@ -21,8 +21,8 @@ jobs:
             - replicator-server
 
       - run:
-        name: Compile and package
-        command: mvn clean install
+          name: Compile and package
+          command: mvn clean install
 
       - run: mvn dependency:go-offline
 
