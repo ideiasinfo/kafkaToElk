@@ -1,8 +1,7 @@
-package br.com.replicatorserver.els;
+package br.com.els.connector;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -11,12 +10,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Optional;
+
 import static org.springframework.http.HttpMethod.POST;
 
 @Component
+@Slf4j
 public class ElsConnector {
-
-    private static final Logger logger = LoggerFactory.getLogger(ElsConnector.class);
 
     private RestTemplate restTemplate;
 
@@ -35,11 +35,38 @@ public class ElsConnector {
         try{
             ResponseEntity<String> result = restTemplate.exchange(buildUrl("kafka-"+topic+"/doc"), POST,
                     new HttpEntity<>(msg, getHeaders()), String.class);
-            logger.debug(result.getBody());
+            log.debug(result.getBody());
         }catch (HttpClientErrorException e) {
             e.printStackTrace();
-            logger.warn(e.toString());
+            log.warn(e.toString());
         }
+    }
+
+    public Optional<JsonNode> updateMessage(String topic, String msgId ,String msg){
+        try{
+            ResponseEntity<JsonNode> result = restTemplate
+                    .exchange(buildUrl("kafka-"+topic+"/_update/"+msgId), POST,
+                    new HttpEntity<>(msg, getHeaders()), JsonNode.class);
+            if(result.getStatusCode().is2xxSuccessful()){
+                return Optional.of(result.getBody());
+            }
+        }catch (HttpClientErrorException e) {
+            log.warn(e.toString());
+        }
+        return Optional.empty();
+    }
+
+    public Optional<JsonNode> searchMessage(String topic, String query){
+        try{
+            ResponseEntity<JsonNode> result = restTemplate.exchange(buildUrl("kafka-"+topic+"/_search"), POST,
+                    new HttpEntity<>(query, getHeaders()), JsonNode.class);
+            if(result.getStatusCode().is2xxSuccessful()){
+                return Optional.of(result.getBody());
+            }
+        }catch (HttpClientErrorException e) {
+            log.warn(e.toString());
+        }
+        return Optional.empty();
     }
 
     private String buildUrl(String resourcePart){

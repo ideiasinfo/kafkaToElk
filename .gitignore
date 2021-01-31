@@ -1,4 +1,7 @@
 *.DS_Store
 *.iml
 .idea/
+els-integration/target/
+kafka-integration/target/
 replicator-server/target/
+stock-replicator/target/

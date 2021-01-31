@@ -1,16 +1,14 @@
 package br.com.replicatorserver.listener;
 
-import br.com.replicatorserver.els.ElsConnector;
+import br.com.els.connector.ElsConnector;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Payload;
 
-import static br.com.replicatorserver.utils.KafkaTopics.*;
+import static br.com.kafka.utils.KafkaTopics.*;
 
 @Configuration
 @Slf4j

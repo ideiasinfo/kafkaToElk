@@ -1,6 +1,6 @@
 package br.com.replicatorserver.listener;
 
-import br.com.replicatorserver.els.ElsConnector;
+import br.com.els.connector.ElsConnector;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,8 +8,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Payload;
 
-import static br.com.replicatorserver.utils.KafkaTopics.*;
-import static br.com.replicatorserver.utils.KafkaTopics.TELEGRAM_MESSAGE_SENT;
+import static br.com.kafka.utils.KafkaTopics.*;
+import static br.com.kafka.utils.KafkaTopics.TELEGRAM_MESSAGE_SENT;
 
 @Slf4j
 @Configuration
