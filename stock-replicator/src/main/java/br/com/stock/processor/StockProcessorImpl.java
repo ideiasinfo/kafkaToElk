@@ -45,17 +45,19 @@ public class StockProcessorImpl implements StockProcessor{
         Double low = source.get("low").asDouble();
         Double close = source.get("close").asDouble();
         Double open = source.get("open").asDouble();
+        Long volume = source.get("volume").asLong();
 
         Double highNew = msg.get("high").asDouble();
         Double lowNew = msg.get("low").asDouble();
         Double closeNew = msg.get("close").asDouble();
         Double openNew = msg.get("open").asDouble();
+        Long volumeNew = source.get("volume").asLong();
 
-        if(high == highNew && low == lowNew && close == closeNew && open == openNew){
+        if(high == highNew && low == lowNew && close == closeNew && open == openNew && volume == volumeNew){
             log.debug("same msg top update - no update");
         }else{
             log.debug("updating registry "+topic+" msg");
-            String msgToUpdate = "{\"doc\":{\"high\":"+highNew+",\"low\":"+lowNew+",\"close\":"+closeNew+",\"open\":"+openNew+"}}";
+            String msgToUpdate = "{\"doc\":{\"high\":"+highNew+",\"low\":"+lowNew+",\"close\":"+closeNew+",\"open\":"+openNew+",\"volume\":"+volumeNew+"}}";
             elsConnector.updateMessage(topic, regId, msgToUpdate);
         }
     }
