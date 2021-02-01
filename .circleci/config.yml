@@ -20,16 +20,14 @@ jobs:
             - replicator-server-{{ checksum "pom.xml" }}
             - replicator-server
 
-      - run: mvn dependency:go-offline
+      - run:
+          name: Compile and package
+          command: mvn clean install
 
       - save_cache:
           paths:
             - ~/.m2
           key: replicator-server-{{ checksum "pom.xml" }}
-
-      - run:
-          name: Compile and package
-          command: mvn clean install
 
       - run:
           name: Docker img creation
