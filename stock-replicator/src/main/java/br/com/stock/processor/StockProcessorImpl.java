@@ -20,16 +20,16 @@ public class StockProcessorImpl implements StockProcessor{
         Long stockTimestamp = msg.get("timestamp").asLong();
         String query = "{\"query\":{\"bool\":{\"must\":[{\"match\":{\"symbol\":\""+stockSymbol+"\"}}],\"filter\":[{\"term\":{\"timestamp\":"+stockTimestamp+"}}]}}}";
         elsConnector.searchMessage(topic, query)
-            .ifPresentOrElse(result -> processResult(topic, msg, result), () -> insert(topic, msg));
+            .ifPresentOrElse(result -> processResult(query,topic, msg, result), () -> insert(topic, msg));
     }
 
-    private void processResult(String topic, JsonNode msg, JsonNode result){
+    private void processResult(String query, String topic, JsonNode msg, JsonNode result){
         Long resultsFound = result.get("hits").get("total").get("value").asLong();
         if(resultsFound >= 1){
             if(resultsFound == 1){
                 update(topic, msg, result);
             }else{
-                log.error("more than one result found");
+                log.error("more than one result found: "+query);
             }
         }else{
             log.debug("no results find in elk");
@@ -56,8 +56,8 @@ public class StockProcessorImpl implements StockProcessor{
         if(high == highNew && low == lowNew && close == closeNew && open == openNew && volume == volumeNew){
             log.debug("same msg top update - no update");
         }else{
-            log.debug("updating registry "+topic+" msg");
             String msgToUpdate = "{\"doc\":{\"high\":"+highNew+",\"low\":"+lowNew+",\"close\":"+closeNew+",\"open\":"+openNew+",\"volume\":"+volumeNew+"}}";
+            log.debug("updating registry "+topic+" msg: "+msgToUpdate);
             elsConnector.updateMessage(topic, regId, msgToUpdate);
         }
     }
