@@ -18,18 +18,18 @@ public class StockProcessorImpl implements StockProcessor{
     public void processStockMessage(String topic, JsonNode msg) {
         String stockSymbol = msg.get("symbol").asText();
         Long stockTimestamp = msg.get("timestamp").asLong();
-        String query = "{\"query\":{\"bool\":{\"must\":[{\"match\":{\"symbol\":\""+stockSymbol+"\"}}],\"filter\":[{\"term\":{\"timestamp\":"+stockTimestamp+"}}]}}}";
+        String query = "{\"query\":{\"bool\":{\"must\":[],\"filter\":[{\"match_phrase\":{\"symbol\":\""+stockSymbol+"\"}},{\"match_phrase\":{\"timestamp\":\""+stockTimestamp+"\"}}]}}}";
         elsConnector.searchMessage(topic, query)
-            .ifPresentOrElse(result -> processResult(query,topic, msg, result), () -> insert(topic, msg));
+            .ifPresentOrElse(result -> processResult(topic, msg, result), () -> insert(topic, msg));
     }
 
-    private void processResult(String query, String topic, JsonNode msg, JsonNode result){
+    private void processResult(String topic, JsonNode msg, JsonNode result){
         Long resultsFound = result.get("hits").get("total").get("value").asLong();
         if(resultsFound >= 1){
             if(resultsFound == 1){
                 update(topic, msg, result);
             }else{
-                log.error("more than one result found: "+query);
+                log.error("more than one result found");
             }
         }else{
             log.debug("no results find in elk");
