@@ -16,5 +16,11 @@ public class KafkaTopics {
     public static final String STOCK_UPDATE_MSG_DEV = "stock.update.msg-dev";
     public static final String STOCK_BULK_MSG_DEV = "stock.bulk.msg-dev";
 
+    public static final String STOCK_UPDATE_DAILY_MSG = "stock.update.daily.msg";
+    public static final String STOCK_BULK_DAILY_MSG = "stock.bulk.daily.msg";
+
+    public static final String STOCK_UPDATE_MSG_DAILY_DEV = "stock.update.daily.msg-dev";
+    public static final String STOCK_BULK_MSG_DAILY_DEV = "stock.bulk.daily.msg-dev";
+
     public static final String REPLICATOR_GROUP_ID = "replicator.group.id";
 }

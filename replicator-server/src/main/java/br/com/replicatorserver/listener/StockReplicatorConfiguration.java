@@ -43,4 +43,26 @@ public class StockReplicatorConfiguration {
         elsConnector.addMsg(STOCK_BULK_MSG_DEV, msg);
     }
 
+    @KafkaListener(topics = STOCK_UPDATE_DAILY_MSG, groupId = REPLICATOR_GROUP_ID)
+    public void processStockDailyUpdate(@Payload final JsonNode msg){
+        stockProcessor.processStockMessage(STOCK_UPDATE_DAILY_MSG, msg);
+    }
+
+    @KafkaListener(topics = STOCK_BULK_DAILY_MSG, groupId = REPLICATOR_GROUP_ID)
+    public void processBulkDailyMsg(@Payload final JsonNode msg){
+        log.debug("replicating "+STOCK_BULK_DAILY_MSG+" msg");
+        elsConnector.addMsg(STOCK_BULK_DAILY_MSG, msg);
+    }
+
+    @KafkaListener(topics = STOCK_UPDATE_MSG_DAILY_DEV, groupId = REPLICATOR_GROUP_ID)
+    public void processStockDailyUpdateDev(@Payload final JsonNode msg){
+        stockProcessor.processStockMessage(STOCK_UPDATE_MSG_DAILY_DEV, msg);
+    }
+
+    @KafkaListener(topics = STOCK_BULK_MSG_DAILY_DEV, groupId = REPLICATOR_GROUP_ID)
+    public void processBulkDailyMsgDev(@Payload final JsonNode msg){
+        log.debug("replicating "+STOCK_BULK_MSG_DAILY_DEV+" msg");
+        elsConnector.addMsg(STOCK_BULK_MSG_DAILY_DEV, msg);
+    }
+
 }
